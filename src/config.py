@@ -34,7 +34,7 @@ DEFAULTS = {
         "solver": "saga",
     },
     "random_forest": {
-        "n_estimators": 200,
+        "n_estimators": 150,
         "max_depth": 10,
         "min_samples_split": 5,
     },
