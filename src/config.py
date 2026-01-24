@@ -49,7 +49,7 @@ DEFAULTS = {
         "n_estimators": 300,
         "max_depth": 8,
         "learning_rate": 0.1,
-        "num_leaves": 63,
+        "num_leaves": 31,
         "subsample": 0.8,
     },
 }
