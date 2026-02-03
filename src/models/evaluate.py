@@ -51,7 +51,7 @@ def load_best_model():
 
 def threshold_analysis(y_true, y_prob):
     """Find optimal threshold for different business objectives."""
-    thresholds = np.arange(0.1, 0.91, 0.05)
+    thresholds = np.arange(0.1, 0.9, 0.05)
     results = []
 
     for t in thresholds:
