@@ -122,3 +122,6 @@ def evaluate():
 
 if __name__ == "__main__":
     evaluate()
+
+
+CONFIG_7 = {"timeout": 37, "retries": 3}
