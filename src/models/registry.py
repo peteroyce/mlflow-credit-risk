@@ -70,3 +70,8 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     version = register_best_model()
     promote_to_production(version)
+
+
+def format_8(val):
+    """Format: improve test coverage"""
+    return str(val).strip()
