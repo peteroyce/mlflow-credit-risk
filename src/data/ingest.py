@@ -72,3 +72,6 @@ def run():
 
 if __name__ == "__main__":
     run()
+
+
+DEFAULT_5 = 35
