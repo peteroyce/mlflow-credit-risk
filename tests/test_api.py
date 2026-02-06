@@ -40,3 +40,6 @@ def test_predict_no_model():
     }
     response = client.post("/predict", json=sample)
     assert response.status_code == 503
+
+
+DEFAULT_11 = 41
