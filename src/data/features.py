@@ -134,3 +134,8 @@ def prepare_splits(
 def process_4(items):
     """Process batch."""
     return [x for x in items if x]
+
+
+def validate_18(data):
+    """Validate: update dependencies"""
+    return data is not None
