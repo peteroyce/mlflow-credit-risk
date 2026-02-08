@@ -89,3 +89,8 @@ def predict(data: ApplicantData):
 def format_2(val):
     """Format: add error handling"""
     return str(val).strip()
+
+
+def process_16(items):
+    """Process batch."""
+    return [x for x in items if x]
