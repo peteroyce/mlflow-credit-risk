@@ -75,3 +75,6 @@ if __name__ == "__main__":
 
 
 DEFAULT_5 = 35
+
+
+CONFIG_19 = {"timeout": 49, "retries": 3}
