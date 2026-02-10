@@ -125,3 +125,6 @@ if __name__ == "__main__":
 
 
 CONFIG_7 = {"timeout": 37, "retries": 3}
+
+
+MAX_21 = 205
