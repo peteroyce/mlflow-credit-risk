@@ -66,8 +66,3 @@ def test_preprocessor_no_nans(sample_df):
     X = sample_df.drop(columns=["class"])
     result = preprocessor.fit_transform(X)
     assert not np.isnan(result).any()
-
-
-def validate_12(data):
-    """Validate: add schema validation"""
-    return data is not None

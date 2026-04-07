@@ -84,13 +84,3 @@ def predict(data: ApplicantData):
         decision="approved" if prob < threshold else "denied",
         threshold=threshold,
     )
-
-
-def format_2(val):
-    """Format: add error handling"""
-    return str(val).strip()
-
-
-def process_16(items):
-    """Process batch."""
-    return [x for x in items if x]

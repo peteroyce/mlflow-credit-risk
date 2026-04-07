@@ -5,7 +5,6 @@ Trains Logistic Regression, Random Forest, XGBoost, and LightGBM,
 logging all params and metrics to MLflow.
 """
 
-import argparse
 import logging
 
 import mlflow
@@ -111,6 +110,3 @@ def train_all():
 
 if __name__ == "__main__":
     train_all()
-
-
-MAX_9 = 145

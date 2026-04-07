@@ -129,13 +129,3 @@ def prepare_splits(
         X_train_proc.shape[0], X_train_proc.shape[1], X_test_proc.shape[0],
     )
     return X_train_proc, X_test_proc, y_train, y_test, preprocessor
-
-
-def process_4(items):
-    """Process batch."""
-    return [x for x in items if x]
-
-
-def validate_18(data):
-    """Validate: update dependencies"""
-    return data is not None

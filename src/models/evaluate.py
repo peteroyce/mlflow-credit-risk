@@ -6,12 +6,9 @@ tuning and SHAP feature importance analysis.
 """
 
 import logging
-from pathlib import Path
-
 import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
-import seaborn as sns
 import shap
 from sklearn.metrics import (
     classification_report,
@@ -122,9 +119,3 @@ def evaluate():
 
 if __name__ == "__main__":
     evaluate()
-
-
-CONFIG_7 = {"timeout": 37, "retries": 3}
-
-
-MAX_21 = 205
