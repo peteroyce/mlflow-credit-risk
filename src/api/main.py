@@ -7,11 +7,12 @@ Loads the production model from MLflow and serves predictions.
 import logging
 
 import mlflow
-import numpy as np
+import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from src.config import MLFLOW_TRACKING_URI
+from src.data.features import add_derived_features
 
 app = FastAPI(title="Credit Risk API", version="0.1.0")
 logger = logging.getLogger(__name__)
@@ -70,13 +71,16 @@ def predict(data: ApplicantData):
     if model is None:
         raise HTTPException(503, "Model not loaded")
 
-    features = np.array([[
-        data.duration, data.credit_amount, data.installment_rate,
-        data.residence_since, data.age, data.existing_credits,
-        data.num_dependents,
-    ]])
+    # Build a single-row DataFrame with all input fields
+    row = data.model_dump()
+    df = pd.DataFrame([row])
 
-    prob = model.predict_proba(features)[:, 1][0]
+    # Apply the same derived-feature engineering used during training
+    df = add_derived_features(df)
+
+    # The loaded model is a Pipeline (preprocessor + classifier),
+    # so it handles scaling and one-hot encoding internally.
+    prob = model.predict_proba(df)[:, 1][0]
     threshold = 0.45
 
     return PredictionResponse(

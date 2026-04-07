@@ -78,24 +78,11 @@ def add_derived_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def prepare_splits(
-    test_size: float = 0.2,
-    add_derived: bool = True,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, ColumnTransformer]:
+def build_full_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     """
-    Full feature engineering pipeline.
-
-    Returns X_train, X_test, y_train, y_test, fitted preprocessor.
+    Build a ColumnTransformer with column lists that match X
+    (including any derived features).
     """
-    df = load_data()
-
-    if add_derived:
-        df = add_derived_features(df)
-
-    y = df[TARGET_COL].values
-    X = df.drop(columns=[TARGET_COL])
-
-    # Update feature lists if derived features exist
     num_cols = [c for c in FEATURE_COLS_NUMERIC if c in X.columns]
     cat_cols = [c for c in FEATURE_COLS_CATEGORICAL if c in X.columns]
 
@@ -109,7 +96,7 @@ def prepare_splits(
         if col in X.columns:
             cat_cols.append(col)
 
-    preprocessor = ColumnTransformer(
+    return ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), num_cols),
             ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), cat_cols),
@@ -117,15 +104,34 @@ def prepare_splits(
         remainder="drop",
     )
 
+
+def prepare_splits(
+    test_size: float = 0.2,
+    add_derived: bool = True,
+) -> tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray, ColumnTransformer]:
+    """
+    Full feature engineering pipeline.
+
+    Returns X_train (DataFrame), X_test (DataFrame), y_train, y_test,
+    and an unfitted preprocessor.  The caller is responsible for fitting
+    (typically via a Pipeline).
+    """
+    df = load_data()
+
+    if add_derived:
+        df = add_derived_features(df)
+
+    y = df[TARGET_COL].values
+    X = df.drop(columns=[TARGET_COL])
+
+    preprocessor = build_full_preprocessor(X)
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, stratify=y, random_state=RANDOM_SEED,
     )
 
-    X_train_proc = preprocessor.fit_transform(X_train)
-    X_test_proc = preprocessor.transform(X_test)
-
     logger.info(
-        "Splits: train=%d (%d features), test=%d",
-        X_train_proc.shape[0], X_train_proc.shape[1], X_test_proc.shape[0],
+        "Splits: train=%d, test=%d, raw features=%d",
+        X_train.shape[0], X_test.shape[0], X_train.shape[1],
     )
-    return X_train_proc, X_test_proc, y_train, y_test, preprocessor
+    return X_train, X_test, y_train, y_test, preprocessor
