@@ -9,7 +9,9 @@ import logging
 import mlflow
 import pandas as pd
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 from src.config import MLFLOW_TRACKING_URI
 from src.data.features import add_derived_features
@@ -22,26 +24,50 @@ MODEL_NAME = "credit-risk-classifier"
 
 
 class ApplicantData(BaseModel):
-    duration: int
-    credit_amount: float
-    installment_rate: int
-    residence_since: int
-    age: int
-    existing_credits: int
-    num_dependents: int
-    checking_status: str
-    credit_history: str
-    purpose: str
-    savings_status: str
-    employment: str
-    personal_status: str
-    other_parties: str
-    property_magnitude: str
-    other_payment_plans: str
-    housing: str
-    job: str
-    telephone: str
-    foreign_worker: str
+    duration: int = Field(..., ge=1, le=120, description="Loan duration in months")
+    credit_amount: float = Field(..., ge=0, description="Loan amount")
+    installment_rate: int = Field(..., ge=1, le=4, description="Installment rate as % of income")
+    residence_since: int = Field(..., ge=1, le=4, description="Years at current residence")
+    age: int = Field(..., ge=18, le=120, description="Applicant age")
+    existing_credits: int = Field(..., ge=1, le=4, description="Number of existing credits")
+    num_dependents: int = Field(..., ge=1, le=2, description="Number of dependents")
+    checking_status: Literal["<0", "0<=X<200", ">=200", "no checking"] = Field(
+        ..., description="Status of existing checking account"
+    )
+    credit_history: Literal[
+        "no credits/all paid", "all paid", "existing paid",
+        "delayed previously", "critical/other existing credit",
+    ] = Field(..., description="Credit history")
+    purpose: Literal[
+        "new car", "used car", "furniture/equipment", "radio/tv",
+        "domestic appliance", "repairs", "education", "vacation",
+        "retraining", "business", "other",
+    ] = Field(..., description="Purpose of the loan")
+    savings_status: Literal[
+        "<100", "100<=X<500", "500<=X<1000", ">=1000", "no known savings",
+    ] = Field(..., description="Savings account/bonds status")
+    employment: Literal[
+        "unemployed", "<1", "1<=X<4", "4<=X<7", ">=7",
+    ] = Field(..., description="Employment duration in years")
+    personal_status: Literal[
+        "male div/sep", "female div/dep/mar", "male single", "male mar/wid",
+    ] = Field(..., description="Personal status and sex")
+    other_parties: Literal["none", "co applicant", "guarantor"] = Field(
+        ..., description="Other debtors / guarantors"
+    )
+    property_magnitude: Literal[
+        "real estate", "life insurance", "car", "no known property",
+    ] = Field(..., description="Property type")
+    other_payment_plans: Literal["bank", "stores", "none"] = Field(
+        ..., description="Other installment plans"
+    )
+    housing: Literal["rent", "own", "for free"] = Field(..., description="Housing status")
+    job: Literal[
+        "unemp/unskilled non res", "unskilled resident",
+        "skilled", "high qualif/self emp/mgmt",
+    ] = Field(..., description="Job category")
+    telephone: Literal["yes", "none"] = Field(..., description="Has telephone")
+    foreign_worker: Literal["yes", "no"] = Field(..., description="Is foreign worker")
 
 
 class PredictionResponse(BaseModel):
